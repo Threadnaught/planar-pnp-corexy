@@ -48,8 +48,8 @@ module sprocket(){
 			}
 		}
 		translate([0,0,-1.5])linear_extrude(5.5,convexity=10)difference(){
-			for(th=[0 : angle_per*2 : 360])
-				rotate(th)polygon([[0,0],[pusher_rad-1.5,0],[(pusher_rad-4)*cos(angle_per*2),(pusher_rad-3)*sin(angle_per*2)]]);
+			for(th=[0 : angle_per : 360])
+				rotate(th)polygon([[0,0],[pusher_rad-1,0],[(pusher_rad-5)*cos(angle_per*2),(pusher_rad-3)*sin(angle_per*2)]]);
 			circle(d=10.5,$fn=gear_count);
 		}
 	}
@@ -61,17 +61,12 @@ module baseplate(){
 			translate([0,(sprocket_dia_real+20)/2])square([sprocket_dia_real+4,sprocket_dia_real+20],center=true);
 		}
 		translate([10,40])circle(d=4);
-		translate([10,32.5])circle(d=4);
-		hull(){
-			translate([5,45])circle(d=3);
-			translate([5,30])circle(d=3);
-		}
 		circle(d=6.5);
 	}
 }
 module guideplate(){
 	rotate([0,90,0]){
-		translate([0,0,5.5])linear_extrude(1,center=true)baseplate();
+		%translate([0,0,5.5])linear_extrude(1,center=true)baseplate();
 		difference(){
 			linear_extrude(10,convexity=4,center=true){
 				difference(){
@@ -96,17 +91,19 @@ module guideplate(){
 	}
 	difference(){
 		union(){
-			translate([0,70,-8.5])cube([12,45,5],center=true);
-			translate([0,50,-12])cube([12,5,5],center=true);
+			translate([0,75,4-8.5])cube([12,55,5],center=true);
+			translate([0,50,4-14])cube([12,5,9],center=true);
 		}
 		hull(){
-			translate([0,60,-10.375])cylinder(1.25+epp,d1=6,d2=3.5,center=true);
-			translate([0,85,-10.375])cylinder(1.25+epp,d1=6,d2=3.5,center=true);
+			translate([0,60,4-10.375])cylinder(1.25+epp,d1=6,d2=3.5,center=true);
+			translate([0,95,4-10.375])cylinder(1.25+epp,d1=6,d2=3.5,center=true);
 		}
 		hull(){
-			translate([0,60,-7.875])cylinder(3.75+epp,d=3.5,center=true);
-			translate([0,85,-7.875])cylinder(3.75+epp,d=3.5,center=true);
+			translate([0,60,4-7.875])cylinder(3.75+epp,d=3.5,center=true);
+			translate([0,95,4-7.875])cylinder(3.75+epp,d=3.5,center=true);
 		}
+		translate([0,54,-7.5])rotate([90,0,0])cylinder(13+ep,d=4,center=true);
+		translate([0,58,-7.5])rotate([90,0,0])cylinder(3,d=5,center=true);
 	}
 }
 module mountplate(){
@@ -115,11 +112,15 @@ module mountplate(){
 module pusher_arm(){
 	difference(){
 		translate([0.25,0,9])rotate([0,90,0])linear_extrude(8,convexity=4,center=true)difference(){
-			polygon([[0,0],[-3.8,0],[-3.8,4],[-3.8,21],[-2.5,21],[-2.5,23],[-3.8,23],[-3.8,45],[1.5,45],[1.5,10],[-1.5,5],[-1.5,4]]);
-			translate([-1,40])circle(d=3.5);
+			polygon([[0.5,0],[-2.5,0],[-3.8,4],[-3.8,30],[6.5,30],[6.5,45],[11.5,45],[11.5,25],[1.5,25],[1.5,10],[-1.5,5],[-1.5,3]]);
+			translate([9,40])circle(d=3.2);
 		}
 		translate([-ep-1.75,11.5-ep,10.25])cube([4,23+epp,5.5+epp],center=true);
-		translate([0.25,40+ep,10.25])cube([4,10,5.5+epp],center=true);
+		translate([0.25,40+ep,0])cube([4,10,20],center=true);
+		translate([0,30,10])difference(){
+			cylinder(2,d=7,center=true);
+			cylinder(23+epp,d=5,center=true);
+		}
 	}
 }
 module pusher_lever(){
@@ -127,15 +128,29 @@ module pusher_lever(){
 		rotate([0,90,0])linear_extrude(8,convexity=4,center=true)difference(){
 				translate([0,35])square([25.5,6],center=true);
 				translate([10,35])circle(d=4);
-				translate([-10,35])circle(d=3.75);
+				translate([0,35])circle(d=3.75);
 			}
 		for(s=[-1:2:1])scale([s,1,1])
-			translate([-2.75-ep,35,9+ep])cube([2.5+ep,6+epp,8+epp],center=true);
+			translate([-2.75-ep,35,0])cube([2.5+ep,6+epp,8+epp],center=true);
+		translate([0,31,10])difference(){
+			cylinder(2,d=7,center=true);
+			cylinder(23+epp,d=5,center=true);
+		}
 	}
 }
-%*rotate([180,0,0])sprocket();
-*guideplate();
+rotate([180,0,0])sprocket();
+guideplate();
 *mountplate();
 pusher_arm();
 pusher_lever();
-translate([0.25,78,3])rotate([0,0,180])solenoid(10);
+translate([0.25,78,7])rotate([0,0,180])solenoid(10);
+
+*difference(){
+	union(){
+		translate([0,0,-0.5])cylinder(0.5,d=10);
+		cylinder(4,d=5.5);
+	}
+	translate([0,4,-0.5])cube([1,1,1+epp],center=true);
+	translate([0,-4,-0.5])cube([1,1,1+epp],center=true);
+	translate([0,0,-1-ep])cylinder(5+epp,d=4);
+}
