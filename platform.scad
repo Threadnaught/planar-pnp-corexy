@@ -1,6 +1,8 @@
 include <constants.scad>;
 black=[0.33,0.33,0.33];
 white=[1,1,1];
+silver=[0.8,0.8,0.8];
+
 module idler_block_profile(){
 	hull(){
 		translate([-21.5*sqrt(2),0])circle(d=16);
@@ -52,49 +54,73 @@ module limit_cutout(){
 	cube([7+epp,15,7.5],center=true);
 }
 
-//Y axis slider
-color(black)
-translate([0,0,50])difference(){
-	//Main body
-	rotate([90,0,0])linear_extrude(50,center=true,convexity=4)difference(){
-		translate([-2.5-2.25,0])square([35-4.5,60],center=true);
-		translate([0,15])circle(d=15.5);
-		translate([-15-ep,-15-ep])square([20+epp,30+epp],center=true);
-	}
-	translate([5,20])rotate(225)
-		idler_cutout();
-	//Slot for X axis rods
-	for(y=[-15:30:15]) translate([-18-ep,y,15])rotate([0,90,0])
-		cylinder(d=8.5,h=20+epp,center=true);
-	//Retaining Screwholes:
-	for(y=[-15:30:15])for(x=[-15:15:0])
-		translate([x,y,15])cylinder(d=4,h=15+ep);
-	translate([-16.5,15,5])limit_cutout();
-}
-
-color(black)translate([-3.5,11.5,35])rotate(225)idler_block();
-
-//Y axis back block
-color(white)
-translate([0,-150,40])difference(){
-	//Main body
-	union(){
+module y_axis_slider(){
+	difference(){
+		//Main body
 		rotate([90,0,0])linear_extrude(50,center=true,convexity=4)difference(){
-			translate([1.5,0])square([18,80],center=true);
-			translate([0,25])circle(d=8.5);
+			translate([-2.5-2.25,0])square([35-4.5,60],center=true);
+			translate([0,15])circle(d=15.5);
+			translate([-15-ep,-15-ep])square([20+epp,30+epp],center=true);
 		}
-		translate([0,0,-37.5])cube([40,50,5],center=true);
+		translate([5,20])rotate(225)
+			idler_cutout();
+		//Slot for X axis rods
+		for(y=[-15:30:15]) translate([-18-ep,y,15])rotate([0,90,0])
+			cylinder(d=8.5,h=20+epp,center=true);
+		//Retaining Screwholes:
+		for(y=[-15:30:15])for(x=[-15:15:0])
+			translate([x,y,15])cylinder(d=4,h=15+ep);
+		translate([-16.5,15,5])limit_cutout();
 	}
-	//Retaining Screwholes:
-	for(y=[-15:30:15])
-		translate([0,y,25])cylinder(d=4,h=20+ep);
-	//Mounting Screwholes
-	for(y=[-15:30:15])for(x=[-15:30:15])
-		translate([x,y,-50])cylinder(d=5.5,h=20+ep);
-	translate([5,-20,10])rotate(135)
-		idler_cutout();
-	//Limit Sw Slot:
-	translate([-2.5,21.5,10])rotate([90,0,90])limit_cutout();
+}
+module y_axis_slider_assembly(){
+	y_axis_slider();
+	translate([-3.5,11.5,-15])rotate(225)idler_block();
 }
 
-color(white)translate([-3.5,-161.5,35])rotate(135)idler_block();
+module y_axis_termination(){
+	difference(){
+		//Main body
+		union(){
+			rotate([90,0,0])linear_extrude(50,center=true,convexity=4)difference(){
+				translate([1.5,0])square([18,80],center=true);
+				translate([0,25])circle(d=8.5);
+			}
+			translate([0,0,-37.5])cube([40,50,5],center=true);
+		}
+		//Retaining Screwholes:
+		for(y=[-15:30:15])
+			translate([0,y,25])cylinder(d=4,h=20+ep);
+		//Mounting Screwholes
+		for(y=[-15:30:15])for(x=[-15:30:15])
+			translate([x,y,-50])cylinder(d=5.5,h=20+ep);
+		translate([5,-20,10])rotate(135)
+			idler_cutout();
+		//Limit Sw Slot:
+		translate([-2.5,21.5,10])rotate([90,0,90])limit_cutout();
+	}
+}
+
+module y_axis_termination_assembly(){
+	y_axis_termination();
+	translate([-3.5,-11.5,-5])rotate(135)idler_block();
+}
+
+for(m=[-1:2:1]) scale([m,1,1])
+color(black)
+translate([155,0,50])y_axis_slider_assembly();
+
+for(m=[-1:2:1])scale([m,1,1])
+color(white)
+translate([155,-150,40])y_axis_termination_assembly();
+
+
+//axis rods:
+color(silver){
+	translate([155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
+	translate([-155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
+	translate([0,15,65])rotate([0,90,0])cylinder(d=8,h=300,center=true);
+	translate([0,-15,65])rotate([0,90,0])cylinder(d=8,h=300,center=true);
+}
+//baseplate:
+translate([0,0,-5])cube([350,350,10],center=true);
