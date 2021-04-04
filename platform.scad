@@ -1,6 +1,6 @@
 include <constants.scad>;
 use <../scaddy/nema.scad>;
-yoff=-85;
+yoff=-0;
 xoff=0;
 
 black=[0.33,0.33,0.33];
@@ -44,7 +44,7 @@ module idler_block(){
 module idler_cutout(){
 	//Slot for idler block:
 	rotate([0,180,180])linear_extrude(35+epp,convexity=4){
-		offset(0.2)polygon([[-10,8],[0,8],[7.5,3],[7.5,-3],[0,-8],[-10,-8]]);
+		offset(0.2)polygon([[-30,38],[30,38],[0,8],[7.5,3],[7.5,-3],[0,-8],[30,-38],[-30,-38]]);
 		for(y=[-3:6:3])translate([7.5,y])circle(d=2.5);
 		translate([20,0])square([15,8.5],center=true);
 	}
@@ -52,13 +52,82 @@ module idler_cutout(){
 	for(z=[-5:10:5])translate([ep,0,z-15.25])rotate([0,90,0])
 		cylinder(d=5,h=20);
 }
-//translate([16.5+ep,-15,-5])
+
 module limit_cutout(){
 	for(y=[0:6.45:6.45])translate([-1.5+ep,y-3.225,-5-ep])cylinder(d=2.5,h=5+ep);
 	cube([7+epp,15,7.5],center=true);
 }
 
-module y_axis_slider(){
+module tensioner() {
+	//Base:
+	translate([-4,0,0])difference(){
+		union(){
+			linear_extrude(6,center=true,convexity=2){
+				for(x=[0:2:10])translate([x-5,0,0])circle(d=1.5);
+			}
+			translate([4,2,-2])cube([22,4,12],center=true);
+		}
+		rotate([90,0,0])hull(){
+			translate([10+1.5,0,0])cylinder(h=10,d=3.5,center=true);
+			translate([10-1.5,0,0])cylinder(h=10,d=3.5,center=true);
+		}
+		translate([-10,0,-5.5])rotate([90,0,0])
+			translate([10+1.5,0,0])cylinder(h=10,d=3.5,center=true);
+	}
+	//Clamp:
+	translate([-4,-0.5,0])difference(){
+		translate([4,-2,-2])cube([22,4,12],center=true);
+		translate([0,ep-0.75,0])cube([20+epp,1.5+epp,6.5],center=true);
+		rotate([90,0,0])hull(){
+			translate([10+1.5,0,0])cylinder(h=10,d=3.5,center=true);
+			translate([10-1.5,0,0])cylinder(h=10,d=3.5,center=true);
+		}
+		translate([-10,0,-5.5])rotate([90,0,0])
+			translate([10+1.5,0,0])cylinder(h=10,d=3.5,center=true);
+	}
+
+}
+
+module x_slider(){
+	difference(){
+		union(){
+			//main body:
+			translate([0,0,50])rotate([90,0,90])linear_extrude(50,center=true,convexity=4)difference(){
+				translate([0,0])square([60,60],center=true);
+				translate([15,15])circle(d=16);
+				translate([-15,15])circle(d=16);
+				translate([-12.625-ep,-15-ep])square([34.75+epp,30+epp],center=true);
+			}
+			//Extensions for distant tensioners:
+			translate([7,-1.125,38.85])cube([9.5,11.75,7.5],center=true);
+			translate([-7,-1.125,29.85])cube([9.5,11.75,7.5],center=true);
+		}
+		//screw holes:
+		translate([6,10,38.85])rotate([90,0,0])cylinder(d=4,h=25);
+		translate([-6,10,29.85])rotate([90,0,0])cylinder(d=4,h=25);
+		translate([-6,10,38.85])rotate([90,0,0])cylinder(d=4,h=25);
+		translate([6,10,29.85])rotate([90,0,0])cylinder(d=4,h=25);
+		for(y=[-15:30:15])for(x=[-15:30:15])
+			translate([x,y,70])cylinder(d=4,h=15+ep);
+		for(z=[-15:30:15])for(x=[-15:30:15])
+			translate([x,27+ep,z+40])rotate([90,0,0])cylinder(d=4,h=6+epp,center=true);
+	}
+}
+module x_slider_assembly(){
+	translate([0,0,-0.15]){
+		//outside teeth on pulley
+		translate([12,6.2-6,30])rotate([0,0,180])scale([1,-1,1])tensioner();
+		//inside teeth on pulley
+		translate([-12,-5.55-6,30])rotate([0,0,180])scale([-1,-1,1])tensioner();
+		//outside teeth on pulley
+		translate([-12,6.2-6,39])rotate([0,0,180])scale([-1,-1,-1])tensioner();
+		//inside teeth on pulley
+		translate([12,-5.55-6,39])rotate([0,0,180])scale([1,-1,-1])tensioner();
+	}
+	x_slider();
+}
+
+module y_slider(){
 	difference(){
 		//Main body
 		rotate([90,0,0])linear_extrude(50,center=true,convexity=4)difference(){
@@ -66,23 +135,23 @@ module y_axis_slider(){
 			translate([0,15])circle(d=15.5);
 			translate([-15-ep,-15-ep])square([20+epp,30+epp],center=true);
 		}
-		translate([5,20])rotate(225)
+		translate([5,-5])rotate(225)
 			idler_cutout();
 		//Slot for X axis rods
-		for(y=[-15:30:15]) translate([-18-ep,y,15])rotate([0,90,0])
+		for(y=[-15:30:15]) translate([-18-ep,y,15+3.5])rotate([0,90,0])
 			cylinder(d=8.5,h=20+epp,center=true);
 		//Retaining Screwholes:
 		for(y=[-15:30:15])for(x=[-15:15:0])
 			translate([x,y,15])cylinder(d=4,h=15+ep);
-		translate([-16.5,15,5])limit_cutout();
+		translate([-16.5,-10,5])limit_cutout();
 	}
 }
-module y_axis_slider_assembly(){
-	y_axis_slider();
-	translate([-3.5,11.5,-15])rotate(225)idler_block();
+module y_slider_assembly(){
+	y_slider();
+	translate([-3.5,11.5-25,-15])rotate(225)idler_block();
 }
 
-module y_axis_termination(){
+module y_termination(){
 	difference(){
 		//Main body
 		union(){
@@ -105,12 +174,12 @@ module y_axis_termination(){
 	}
 }
 
-module y_axis_termination_assembly(){
-	y_axis_termination();
+module y_termination_assembly(){
+	y_termination();
 	translate([-3.5,-11.5,-5])rotate(135)idler_block();
 }
 
-module y_axis_motor_termination(){
+module y_motor_termination(){
 	difference(){
 		//Main body
 		union(){
@@ -139,30 +208,30 @@ module y_axis_motor_termination(){
 	}
 }
 
-module y_axis_motor_termination_assembly(){
-	y_axis_motor_termination();
+module y_motor_termination_assembly(){
+	y_motor_termination();
 	translate([18+11.4,49,-20])nema_17();
 }
 
 for(m=[-1:2:1])scale([m,1,1])
-color(white)
-translate([155,-150,40])y_axis_termination_assembly();
+color(black)
+translate([155,-150,40])y_termination_assembly();
 
 for(m=[-1:2:1])scale([m,1,1])
-color(white)
-translate([155,150,40])y_axis_motor_termination_assembly();
+color(black)
+translate([155,150,40])y_motor_termination_assembly();
 
 for(m=[-1:2:1]) scale([m,1,1])
-color(black)
-translate([155,yoff,50])scale([1,-1,1])y_axis_slider_assembly();
+//color(black)
+translate([155,yoff,50])scale([1,-1,1])y_slider_assembly();
 
-color(black)
+*color(black)
 translate([xoff,yoff,50])cube([50,50,60],center=true);
 //axis rods:
 color(silver){
 	//Y axis
-	translate([0,yoff+15,65])rotate([0,90,0])cylinder(d=8,h=300,center=true);
-	translate([0,yoff-15,65])rotate([0,90,0])cylinder(d=8,h=300,center=true);
+	translate([0,yoff+15,68.5])rotate([0,90,0])cylinder(d=8,h=300,center=true);
+	translate([0,yoff-15,68.5])rotate([0,90,0])cylinder(d=8,h=300,center=true);
 	//X axis:
 	translate([155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
 	translate([-155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
@@ -173,13 +242,4 @@ linear_extrude(10)
 import("baseplate.svg",center=true);
 //cube([350,350,10],center=true);
 
-*difference(){
-	union(){
-		*linear_extrude(25,center=true,convexity=2){
-			for(x=[0:2:10])translate([x-5,0,0])circle(d=1.5);
-			translate([0,1,0])square([25,2],center=true);
-		}
-		translate([0,-5,0])cube([25,2,25],center=true);
-	}
-	for(z=[-1:2:1])for(x=[-1:2:1])scale([x,1,z])translate([9,0,9])rotate([90,0,0])cylinder(h=20,d=3.75,center=true);
-}
+x_slider_assembly();
