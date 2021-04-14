@@ -1,6 +1,6 @@
 include <constants.scad>;
 use <../scaddy/nema.scad>;
-yoff=-0;
+yoff=0;
 xoff=0;
 
 black=[0.33,0.33,0.33];
@@ -88,31 +88,56 @@ module tensioner() {
 
 }
 
-module x_slider(){
+module x_slider_mini(){
 	difference(){
 		union(){
 			//main body:
-			translate([0,0,50])rotate([90,0,90])linear_extrude(50,center=true,convexity=4)difference(){
-				translate([0,0])square([60,60],center=true);
-				translate([15,15])circle(d=16);
-				translate([-15,15])circle(d=16);
-				translate([-12.625-ep,-15-ep])square([34.75+epp,30+epp],center=true);
+			translate([0,0,50])rotate([90,0,90])linear_extrude(25,center=true,convexity=4)difference(){
+				translate([0,2.5])square([60,65],center=true);
+				translate([15,18.5])circle(d=16);
+				translate([-15,18.5])circle(d=16);
+				translate([-12.625-2.85-ep,-15-ep])square([34.75+epp,30+epp],center=true);
 			}
+			//bumper
+			translate([0,17.5,50])cube([50,25,10],center=true);
 			//Extensions for distant tensioners:
-			translate([7,-1.125,38.85])cube([9.5,11.75,7.5],center=true);
-			translate([-7,-1.125,29.85])cube([9.5,11.75,7.5],center=true);
+			translate([7,-1.125-2.85,38.85])cube([9.5,11.75,7.5],center=true);
+			translate([-7,-1.125-2.85,29.85])cube([9.5,11.75,7.5],center=true);
 		}
 		//screw holes:
 		translate([6,10,38.85])rotate([90,0,0])cylinder(d=4,h=25);
 		translate([-6,10,29.85])rotate([90,0,0])cylinder(d=4,h=25);
 		translate([-6,10,38.85])rotate([90,0,0])cylinder(d=4,h=25);
 		translate([6,10,29.85])rotate([90,0,0])cylinder(d=4,h=25);
-		for(y=[-15:30:15])for(x=[-15:30:15])
-			translate([x,y,70])cylinder(d=4,h=15+ep);
-		for(z=[-15:30:15])for(x=[-15:30:15])
-			translate([x,27+ep,z+40])rotate([90,0,0])cylinder(d=4,h=6+epp,center=true);
+		for(y=[-15:30:15])
+			translate([0,y,70])cylinder(d=4,h=15+ep);
+		for(z=[-15:45:30])
+			translate([0,27+ep,z+50])rotate([90,0,0])cylinder(d=4,h=10+epp,center=true);
 	}
 }
+
+union(){
+	difference(){
+		translate([0,40,50])cube([30,5,70],center=true);
+		hull(){
+			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=6,center=true);
+			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=5,center=true);
+		}
+	}
+	difference(){
+		translate([0,57.5,17.5])cube([30,30,5],center=true);
+		translate([0,57.5,17.5])cube([23.5,16,6],center=true);
+		for(x=[-12:24:12])for(y=[-12:24:12])
+			translate([x,y+57.5,17.5])cylinder(d=2.5,h=6,center=true);
+		hull(){
+			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
+			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
+		}
+	}
+}
+
+//include <smallhead.scad>;
+
 module x_slider_assembly(){
 	translate([0,0,-0.15]){
 		//outside teeth on pulley
@@ -124,7 +149,7 @@ module x_slider_assembly(){
 		//inside teeth on pulley
 		translate([12,-5.55-6,39])rotate([0,0,180])scale([1,-1,-1])tensioner();
 	}
-	x_slider();
+	x_slider_mini();
 }
 
 module y_slider(){
@@ -237,9 +262,9 @@ color(silver){
 	translate([-155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
 }
 //baseplate:
-translate([0,0,-10])
+*translate([0,0,-10])
 linear_extrude(10)
 import("baseplate.svg",center=true);
 //cube([350,350,10],center=true);
 
-x_slider_assembly();
+translate([xoff, yoff, 0])x_slider_assembly();

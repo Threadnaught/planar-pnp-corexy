@@ -2,7 +2,7 @@ include <constants.scad>
 use <../scaddy/nema.scad>
 
 
-!union(){
+rotate(90)union(){
 	//base
 	difference(){
 		translate([15,0,-2.5])cube([80,80,5],center=true);
@@ -39,7 +39,7 @@ use <../scaddy/nema.scad>
 %translate([0,0,28])rotate([0,180,0])nema_11();
 
 //rotating section:
-rotate(0){
+rotate(90){
 	difference(){
 		union(){
 			translate([30,0,52.5])cube([5,15,80],center=true);
@@ -53,7 +53,7 @@ rotate(0){
 	}
 	union(){
 		//OLD::::
-		difference(){
+		*difference(){
 			translate([0,0,20])linear_extrude(25,convexity=4)difference(){
 				translate([53,0])square([30,20],center=true);
 				translate([65,0])circle(d=1.6);
