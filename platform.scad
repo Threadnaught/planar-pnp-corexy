@@ -116,27 +116,7 @@ module x_slider_mini(){
 	}
 }
 
-union(){
-	difference(){
-		translate([0,40,50])cube([30,5,70],center=true);
-		hull(){
-			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=6,center=true);
-			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=5,center=true);
-		}
-	}
-	difference(){
-		translate([0,57.5,17.5])cube([30,30,5],center=true);
-		translate([0,57.5,17.5])cube([23.5,16,6],center=true);
-		for(x=[-12:24:12])for(y=[-12:24:12])
-			translate([x,y+57.5,17.5])cylinder(d=2.5,h=6,center=true);
-		hull(){
-			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
-			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
-		}
-	}
-}
 
-//include <smallhead.scad>;
 
 module x_slider_assembly(){
 	translate([0,0,-0.15]){
@@ -238,6 +218,35 @@ module y_motor_termination_assembly(){
 	translate([18+11.4,49,-20])nema_17();
 }
 
+
+
+include <smallhead.scad>;
+
+
+*union(){
+	difference(){
+		translate([0,40,50])cube([30,5,70],center=true);
+		hull(){
+			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=6,center=true);
+			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=5,center=true);
+		}
+	}
+	difference(){
+		translate([0,57.5,17.5])cube([30,30,5],center=true);
+		translate([0,57.5,17.5])cube([23.5,16,6],center=true);
+		for(x=[-12:24:12])for(y=[-12:24:12])
+			translate([x,y+57.5,17.5])cylinder(d=2.5,h=6,center=true);
+		hull(){
+			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
+			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
+		}
+	}
+}
+
+
+
+
+
 for(m=[-1:2:1])scale([m,1,1])
 color(black)
 translate([155,-150,40])y_termination_assembly();
@@ -262,7 +271,7 @@ color(silver){
 	translate([-155,0,65])rotate([90,0,0])cylinder(d=8,h=300,center=true);
 }
 //baseplate:
-*translate([0,0,-10])
+translate([0,0,-10])
 linear_extrude(10)
 import("baseplate.svg",center=true);
 //cube([350,350,10],center=true);
