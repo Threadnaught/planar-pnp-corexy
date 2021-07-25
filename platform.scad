@@ -219,6 +219,19 @@ module y_motor_termination_assembly(){
 }
 
 
+module foot(){
+	scale([1,1,-1]) difference(){
+		//Main body
+		union(){
+			translate([0,0,-30])rotate([90,0,0])linear_extrude(50,center=true,convexity=4)
+			translate([0,7.5])square([18,35],center=true);
+			translate([0,0,-37.5])cube([40,50,5],center=true);
+		}
+		//Mounting Screwholes
+		for(y=[-15:30:15])for(x=[-15:30:15])
+			translate([x,y,-50])cylinder(d=5.5,h=20+ep);
+	}
+}
 
 include <smallhead.scad>;
 
@@ -259,8 +272,10 @@ for(m=[-1:2:1]) scale([m,1,1])
 //color(black)
 translate([155,yoff,50])scale([1,-1,1])y_slider_assembly();
 
-*color(black)
-translate([xoff,yoff,50])cube([50,50,60],center=true);
+
+for(m=[-1:2:1]) for(n=[-1:2:1]) scale([m,n,1])
+//color(black)
+translate([155,150,-50])foot();
 //axis rods:
 color(silver){
 	//Y axis
