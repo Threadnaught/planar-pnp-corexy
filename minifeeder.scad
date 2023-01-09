@@ -1,5 +1,5 @@
-use<../scaddy/vslot.scad>;
-use<../scaddy/solenoid.scad>;
+use<scaddy/vslot.scad>;
+use<scaddy/solenoid.scad>;
 
 
 clearance=0.5;

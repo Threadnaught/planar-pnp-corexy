@@ -1,11 +1,11 @@
 include <constants.scad>
-use <../scaddy/nema.scad>
+use <scaddy/nema.scad>
 
 
 translate([0,60,0])rotate(90)union(){
 	//spine
 	translate([-22.5,0,70])difference(){
-		cube([5,30,100],center=true);
+		translate([0,0,10])cube([5,30,120],center=true);
 		hull(){
 			translate([0,0,-45])rotate([90,0,90])cylinder(d=3.5,h=6,center=true);
 			translate([0,0,20])rotate([90,0,90])cylinder(d=3.5,h=5,center=true);
@@ -27,31 +27,31 @@ translate([0,60,0])rotate(90)union(){
 			translate([x-2.5,y])circle(d=5);
 		for(x=[-12:24:12])
 			translate([x,x])circle(d=2.5);
-		for(y=[-3:6:3])translate([-9,8+y])circle(d=2.5);
+		for(y=[-3:6:3])translate([-5,8+y])circle(d=2.5);
 	}
 
 	//bearing holder
-	translate([0,0,110])difference(){
+	translate([0,0,130])difference(){
 		union(){
-			translate([0,0,5])cylinder(d=32,h=10,center=true);
+			translate([0,0,5])cylinder(d=35,h=10,center=true);
 			translate([-15,0,5])cube([10,20,10],center=true);
 		}
-		translate([0,0,2])cylinder(d=24,h=8+ep);
+		translate([0,0,2])cylinder(d=26,h=8+ep);
 		for(th=[0:120:360])rotate([90,0,90+th])translate([0,7.5,10])cylinder(d=4,h=10);
 	}
 }
 
 //motor
-%translate([0,60,68])rotate([0,180,0])nema_11();
+%translate([0,60,68])rotate([0,180,0])nema_11(51);
 
 //rotating section:
 translate([0,60,40])rotate(0+90){
 	difference(){
 		union(){
-			translate([26,0,45])cube([5,15,95],center=true);
+			translate([26,0,55])cube([5,15,115],center=true);
 			translate([10,0,16.5])cube([35,15,8],center=true);
-			translate([10,0,90])cube([35,15,5],center=true);
-			translate([0,0,75])cylinder(d=7.95,h=14.5);
+			translate([10,0,110])cube([35,15,5],center=true);
+			translate([0,0,95])cylinder(d=7.95,h=14.5);
 			translate([12,-6,16.5])cylinder(d=7.5,h=8,center=true);
 			translate([36,-17,64])cube([15,2,10],center=true);
 			translate([26,-12.75,64])cube([5,10.5,10],center=true);
@@ -63,7 +63,7 @@ translate([0,60,40])rotate(0+90){
 		translate([28,-16,64])for(y=[-3:6:3])rotate([90,90,0])translate([0,10+y])cylinder(h=5+epp,d=2.5,center=true);
 	}
 	
-	translate([53,0,5])difference(){
+	translate([53,0,50])difference(){
 		//Body:
 		translate([2.5,-2.5,-2.5])cube([35,25,25],center=true);
 		//Cutouts for slider:
@@ -94,6 +94,14 @@ translate([0,60,40])rotate(0+90){
 		//Needle hole/valve:
 		translate([65-53,0,5])cylinder(d=11,h=5+ep);
 		translate([65-53,0])cylinder(d=1.6,h=30+epp,center=true);
+	}
+	//Sock:
+	translate([65,0,10]) difference(){
+		cylinder(d=5,h=5,center=true);
+		translate([0,0,1.5])cylinder(d2=2.5,d1=1.35,h=2+epp,center=true);
+		translate([0,0,1])cylinder(d2=1.35,d1=1.35,h=4.6+epp,center=true);
+		translate([0,0,0])cylinder(d2=1,d1=1,h=10+epp,center=true);
+		//translate([0,0,-2.25])cylinder(d2=3,d1=3,h=1+epp,center=true);
 	}
 	
 }

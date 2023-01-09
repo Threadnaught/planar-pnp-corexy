@@ -1,5 +1,5 @@
 include <constants.scad>;
-use <../scaddy/nema.scad>;
+use <scaddy/nema.scad>;
 yoff=0;
 xoff=0;
 
@@ -236,27 +236,6 @@ module foot(){
 include <smallhead.scad>;
 
 
-*union(){
-	difference(){
-		translate([0,40,50])cube([30,5,70],center=true);
-		hull(){
-			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=6,center=true);
-			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=5,center=true);
-		}
-	}
-	difference(){
-		translate([0,57.5,17.5])cube([30,30,5],center=true);
-		translate([0,57.5,17.5])cube([23.5,16,6],center=true);
-		for(x=[-12:24:12])for(y=[-12:24:12])
-			translate([x,y+57.5,17.5])cylinder(d=2.5,h=6,center=true);
-		hull(){
-			translate([0,40,30])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
-			translate([0,40,70])rotate([90,0,0])cylinder(d=3.5,h=10,center=true);
-		}
-	}
-}
-
-
 
 
 
@@ -274,7 +253,7 @@ translate([155,yoff,50])scale([1,-1,1])y_slider_assembly();
 
 
 for(m=[-1:2:1]) for(n=[-1:2:1]) scale([m,n,1])
-//color(black)
+color(black)
 translate([155,150,-50])foot();
 //axis rods:
 color(silver){

@@ -1,0 +1,3 @@
+[submodule "scaddy"]
+	path = scaddy
+	url = git@github.com:Threadnaught/scaddy.git
