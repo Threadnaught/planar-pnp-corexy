@@ -2,5 +2,5 @@
 
 My first attempt at a PnP. Margnially successful.
 
-![Operating](./operating.mp4)
+![Operating](./operating.gif)
 ![Platform](./platform.png)
