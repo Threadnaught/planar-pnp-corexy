@@ -2,5 +2,5 @@
 
 My first attempt at a PnP. Margnially successful.
 
-![Operating](./operating.gif)
-![Platform](./platform.png)
+<img src="./operating.gif" alt="Operating" width="600"/>
+<img src="./platform.png" alt="Platform" width="600"/>
